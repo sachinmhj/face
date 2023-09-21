@@ -1,0 +1,50 @@
+{% extends 'lugin/base.html' %}
+
+{% block title %}
+Login Page
+{% endblock %}
+
+{% block css %}
+.card-header{
+background-color: #1d031a;
+}
+.card-body{
+background-color: #2b0325;
+}
+{% endblock %}
+{% block body %}
+<h1 class="text-center mt-5" id="topic">Welcome To Online Attendance</h1>
+<div class="container" id="log">
+  <div class="row justify-content-center mt-5">
+    <div class="col-md-6">
+      <div class="card" style="background-color: rgb(107, 106, 106);color: rgb(243, 243, 243);border-color: white;">
+        <div class="card-header">
+          <h3 class="text-center">Login</h3>
+        </div>
+        <div class="card-body">
+          <form method="post" action="" novalidate>
+            {% csrf_token %}
+            {% for f in form %}
+            <div class="form-group text-center my-2">
+              <div class="mb-2">
+                {{f.label}}
+              </div>
+              <div>
+                {{f}}
+              </div>
+              <div>
+                {{f.errors|striptags}}
+              </div>
+            </div>
+            {% endfor %}
+            <div class="text-center">
+              <button type="submit" class="btn btn-success mt-3">Login</button>
+              <a href="/signup/" class="btn btn-success mt-3">Register</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Details</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <style>
+        body{
+            background-color: #000000;
+        }
+        .detail{
+            height: 100vh;
+        }
+        .items{
+            font-size: 2rem;
+        }
+        .itemColor{
+            color: black;
+        }
+    </style>
+</head>
+
+<body>
+    <h1 class="text-center text-white my-4">My Details</h1>
+    <div class="container text-center detail">
+        <div class="d-flex flex-column items border border-4 justify-content-center align-items-center bg-secondary">
+            <div class="bg-dark rounded mt-2">
+                <img src="{{imag.url}}" alt="empty" class="w-50 rounded my-2">
+            </div>
+            <div>
+                <div class="itemColor my-4">
+                    Name: {{name}}
+                </div>
+                <div class="itemColor my-4">
+                    First Name: {{fname}}
+                </div>
+                <div class="itemColor my-4">
+                    last Name: {{lname}}
+                </div>
+                <div class="itemColor my-4">
+                    Email: {{email}}
+                </div>
+                <div class="itemColor my-4">
+                    Role: {{role}}
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <a href="/userProfile/" class="btn btn-info my-4" role="button">Back</a>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
