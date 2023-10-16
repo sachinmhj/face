@@ -28,7 +28,6 @@ def details(request):
     pm = {"name":nem,"fname":fname,"lname":lname,"email":emel,"role":rol,"imag":pic}
     return render(request,"uzer/userDetails.html",pm)
 
-# take attendance
 def atendance(request):
     cap = cv2.VideoCapture(0)
 
@@ -40,9 +39,12 @@ def atendance(request):
     # print(loaddbImazeList)
     encodloaddbImageList = [face_recognition.face_encodings(i)[0] for i in loaddbImazeList]
     # print(type(encodloaddbImageList[0]))
-
-    attendance_taken = False    # Add variable to keep track of attendance taken or not
+    
     while True:
+        currentTime = datetime.now()
+        cTim = currentTime.strftime("%Y-%m-%d")
+        # print("current time is",cTim)
+        # print(type(cTim))
         bol, fram = cap.read()
         # print(bol)
         # print(fram)
@@ -56,18 +58,35 @@ def atendance(request):
             bestIndex = numpy.argmin(distanc)
             # print(bestIndex)
 
-            if compar[bestIndex]:
-                if not attendance_taken:  # Check if attendance has not been taken for this student
-                    naam = AllImaze[int(bestIndex)]
-                    img = fram
-                    text = f"{naam} Attendance Taken"
-                    org = (200, 200)
-                    fontface = cv2.FONT_HERSHEY_DUPLEX
-                    fontscale = 1.0
-                    color = (125, 246, 55)
-                    fm = cv2.putText(img, text, org, fontface, fontscale, color)
-                    cv2.imshow("camra", fm)
+            # attendance_interval = timedelta(minutes=30)  # Set the desired attendance interval (e.g., 30 minutes)
+            
+            naam = AllImaze[int(bestIndex)]
+            # print(naam)
+            # print(type((naam)))
+            # print(type(str(Attendance.objects.get(student=naam.id).date)))
+            # print(str(Attendance.objects.get(student=naam.id).date))
+            img = fram
+            text = f"{naam} Attendance Taken"
+            org = (200, 200)
+            fontface = cv2.FONT_HERSHEY_DUPLEX
+            fontscale = 1.0
+            color = (125, 246, 55)
+            # print(Attendance.objects.filter(student=naam.id)[0].date)
 
+            if compar[bestIndex]:
+                fm = cv2.putText(img, text, org, fontface, fontscale, color)
+                cv2.imshow("camra", fm)
+
+                # print(str(Attendance.objects.filter(student=naam.id)[0].date))
+                # print(daat)
+                firstAtend = Attendance.objects.filter(student=naam.id)
+                print(firstAtend)
+                studentAttendDate = [str(Attendance.objects.filter(student=naam.id)[i].date) for i in range(len(firstAtend))]
+                print(studentAttendDate)
+                # print(type(studentAttendDate))
+                # if cTim not in daat:
+                if not firstAtend.exists():
+                    print("didn't existed")
                     nem = naam.id
                     now = datetime.now()
                     dt_string = now.strftime("%Y-%m-%d")
@@ -76,11 +95,24 @@ def atendance(request):
                     # attendace save in database
                     SavAttendanceInDb = Attendance(date=dt_string, time=dt_time, status="present", student_id=nem)
                     SavAttendanceInDb.save()
-                    attendance_taken = True  # Set True, so that attendance is not taken again for this student
+                elif(cTim not in studentAttendDate):
+                    print("time not existed")
+                    nem = naam.id
+                    now = datetime.now()
+                    dt_string = now.strftime("%Y-%m-%d")
+                    dt_time = now.strftime("%H:%M:%S")
 
+                    # attendace save in database
+                    SavAttendanceInDb = Attendance(date=dt_string, time=dt_time, status="present", student_id=nem)
+                    SavAttendanceInDb.save()
+                else:
+                    pass
+                    
             else:
                 text = "Detecting Face..."
-                cv2.imshow("camra", fram)
+                color = (125, 200, 0)
+                fms = cv2.putText(img, text, org, fontface, fontscale, color)
+                cv2.imshow("camra", fms)
 
         if cv2.waitKey(10) == ord("q"):
             break
@@ -88,75 +120,6 @@ def atendance(request):
     cap.release()
     cv2.destroyAllWindows()
     return render(request, "uzer/attend.html")
-
-# def atendance(request):
-#     cap = cv2.VideoCapture(0)
-
-#     AllImaze = customuser.objects.filter(Role="student")
-#     # print(AllImaze)
-#     dbImazeList = [a.Imege for a in AllImaze]
-#     # print(dbImazeList)
-#     loaddbImazeList = [face_recognition.load_image_file(i) for i in dbImazeList]
-#     # print(loaddbImazeList)
-#     encodloaddbImageList = [face_recognition.face_encodings(i)[0] for i in loaddbImazeList]
-#     # print(type(encodloaddbImageList[0]))
-
-#     # Initialize variables for attendance tracking
-#     attendance_taken = []
-
-#     while True:
-#         bol, fram = cap.read()
-#         # print(bol)
-#         # print(fram)
-#         locatefram = face_recognition.face_locations(fram)
-#         encodfram = face_recognition.face_encodings(fram, locatefram)
-#         # print(encodfram)
-#         for data in encodfram:
-#             compar = face_recognition.compare_faces(encodloaddbImageList, data)
-#             # print(compar)
-#             distanc = face_recognition.face_distance(encodloaddbImageList, data)
-#             bestIndex = numpy.argmin(distanc)
-#             # print(bestIndex)
-
-#             # attendance_interval = timedelta(minutes=30)  # Set the desired attendance interval (e.g., 30 minutes)
-            
-#             naam = AllImaze[int(bestIndex)]
-#             print(naam)
-#             img = fram
-#             text = f"{naam} Attendance Taken"
-#             org = (200, 200)
-#             fontface = cv2.FONT_HERSHEY_DUPLEX
-#             fontscale = 1.0
-#             color = (125, 246, 55)
-
-#             if compar[bestIndex]:
-#                 fm = cv2.putText(img, text, org, fontface, fontscale, color)
-#                 cv2.imshow("camra", fm)
-
-#                 if naam.id not in attendance_taken:
-#                     nem = naam.id
-#                     now = datetime.now()
-#                     dt_string = now.strftime("%Y-%m-%d")
-#                     dt_time = now.strftime("%H:%M:%S")
-
-#                     # attendace save in database
-#                     SavAttendanceInDb = Attendance(date=dt_string, time=dt_time, status="present", student_id=nem)
-#                     SavAttendanceInDb.save()
-#                     attendance_taken.append(nem)
-#                     # print(attendance_taken)
-                    
-#             else:
-#                 text = "Detecting Face..."
-#                 color = (125, 200, 0)
-#                 fms = cv2.putText(img, text, org, fontface, fontscale, color)
-#                 cv2.imshow("camra", fms)
-
-#         if cv2.waitKey(10) == ord("q"):
-#             break
-
-#     cap.release()
-#     cv2.destroyAllWindows()
-#     return render(request, "uzer/attend.html")
 
 # attendance data
 def attendData(request):
