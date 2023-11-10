@@ -11,7 +11,7 @@ kiwisolver==1.3.1
 matplotlib==3.3.4
 mysqlclient==1.4.6
 numpy==1.19.5
-opencv-python @ https://files.pythonhosted.org/packages/71/e9/442850819c4059ef54ab5155a1aa8181af3f9cdf200fa4451afaa0b03e8a/opencv_python-3.4.18.65-cp36-abi3-win_amd64.whl
+opencv-python==3.4.0.14
 pandas==1.1.5
 Pillow==8.4.0
 protobuf==3.19.6
